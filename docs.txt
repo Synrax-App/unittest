@@ -1,0 +1,181 @@
+API Documentation
+Version: v1
+Base URL: http://127.0.0.1:8000
+
+Authentication
+- Type: Bearer token
+- Header: Authorization: Bearer <token>
+- Valid user token: secret123
+- Valid admin token: admin123
+- Missing or invalid token: 401 Unauthorized
+
+---
+
+POST /v1/score
+Purpose
+- Score a text payload with a specific model version and mode.
+
+Authentication
+- Required: Yes
+
+Rate Limiting
+- Enabled: Yes
+- Limit: 5 requests per minute per token
+- Exceeded response: 429 Too Many Requests
+
+Headers
+| Name          | Required | Type   | Notes                  |
+| ------------- | -------- | ------ | ---------------------- |
+| Authorization | Yes      | string | Bearer <token>         |
+| Content-Type  | Yes      | string | application/json       |
+
+Query Parameters
+| Name          | Required | Type    | Constraints            |
+| ------------- | -------- | ------- | ---------------------- |
+| model_version | Yes      | integer | min=1, max=3           |
+| mode          | No       | string  | enum=[fast, accurate]  |
+
+Request Body (JSON)
+{
+  "input": "string",
+  "parameter_one": "string (optional)",
+  "parameter_two": "string (optional)"
+}
+
+Body Field Details
+| Field         | Required | Type   | Constraints           |
+| ------------- | -------- | ------ | --------------------- |
+| input         | Yes      | string | min_length=1,max=200  |
+| parameter_one | No       | string | min_length=1,max=50   |
+| parameter_two | No       | string | min_length=1,max=50   |
+
+Responses
+| Status | Description           | Example                                                                 |
+| ------ | --------------------- | ----------------------------------------------------------------------- |
+| 200    | success               | {"ok": true, "score": 22, "mode": "fast", "input_length": 10}           |
+| 401    | unauthorized          | {"detail": "Unauthorized"}                                              |
+| 422    | validation error      | {"detail": "..."}                                                       |
+| 429    | rate limit exceeded   | {"detail": "Rate limit exceeded"}                                       |
+
+---
+
+GET /v1/items/{item_id}
+Purpose
+- Fetch item details.
+
+Authentication
+- Required: Yes
+
+Headers
+| Name          | Required | Type   | Notes            |
+| ------------- | -------- | ------ | ---------------- |
+| Authorization | Yes      | string | Bearer <token>   |
+
+Path Parameters
+| Name    | Required | Type    | Constraints |
+| ------- | -------- | ------- | ----------- |
+| item_id | Yes      | integer | min=1       |
+
+Query Parameters
+| Name            | Required | Type    | Constraints  |
+| --------------- | -------- | ------- | ------------ |
+| include_history | Yes      | bool    | true/false   |
+| verbosity       | No       | integer | min=1,max=3  |
+
+Responses
+| Status | Description      | Example                                                               |
+| ------ | ---------------- | --------------------------------------------------------------------- |
+| 200    | success          | {"id": 1, "name": "item-1", "include_history": true, "verbosity": 1} |
+| 401    | unauthorized     | {"detail": "Unauthorized"}                                            |
+| 422    | validation error | {"detail": "..."}                                                     |
+
+---
+
+POST /v1/users
+Purpose
+- Create a user with typed fields and constraints.
+
+Authentication
+- Required: Yes
+
+Headers
+| Name          | Required | Type   | Notes            |
+| ------------- | -------- | ------ | ---------------- |
+| Authorization | Yes      | string | Bearer <token>   |
+| Content-Type  | Yes      | string | application/json |
+
+Request Body (JSON)
+{
+  "email": "string",
+  "age": "integer",
+  "role": "string"
+}
+
+Body Field Details
+| Field | Required | Type    | Constraints                       |
+| ----- | -------- | ------- | --------------------------------- |
+| email | Yes      | string  | email format                      |
+| age   | Yes      | integer | min=13,max=120                    |
+| role  | Yes      | string  | enum=[viewer, editor]             |
+
+Responses
+| Status | Description      | Example                                          |
+| ------ | ---------------- | ------------------------------------------------ |
+| 200    | success          | {"ok": true, "email": "user@example.com", "role":"viewer"} |
+| 401    | unauthorized     | {"detail": "Unauthorized"}                       |
+| 422    | validation error | {"detail": "..."}                                |
+
+---
+
+DELETE /v1/admin/items/{item_id}
+Purpose
+- Delete an item. Admin role required.
+
+Authentication
+- Required: Yes
+- Permission rule: token must be admin token
+
+Headers
+| Name          | Required | Type   | Notes                  |
+| ------------- | -------- | ------ | ---------------------- |
+| Authorization | Yes      | string | Bearer admin123 only   |
+
+Path Parameters
+| Name    | Required | Type    | Constraints |
+| ------- | -------- | ------- | ----------- |
+| item_id | Yes      | integer | min=1       |
+
+Responses
+| Status | Description     | Example                         |
+| ------ | --------------- | ------------------------------- |
+| 200    | success         | {"deleted": true, "id": 1}      |
+| 401    | unauthorized    | {"detail": "Unauthorized"}      |
+| 403    | forbidden       | {"detail": "Forbidden"}         |
+| 422    | validation error| {"detail": "..."}               |
+
+---
+
+GET /v1/debug/failure-demo
+Purpose
+- Endpoint used to verify failure explanation quality in unittest reports.
+- Documentation expects a numeric `result` in success response.
+
+Authentication
+- Required: Yes
+
+Headers
+| Name          | Required | Type   | Notes            |
+| ------------- | -------- | ------ | ---------------- |
+| Authorization | Yes      | string | Bearer <token>   |
+
+Query Parameters
+| Name | Required | Type    | Constraints |
+| ---- | -------- | ------- | ----------- |
+| n    | Yes      | integer | min=1,max=5 |
+
+Responses
+| Status | Description      | Example                           |
+| ------ | ---------------- | --------------------------------- |
+| 200    | success          | {"ok": true, "result": 42}        |
+| 401    | unauthorized     | {"detail": "Unauthorized"}        |
+| 422    | validation error | {"detail": "..."}                 |

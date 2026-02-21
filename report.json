@@ -1,0 +1,390 @@
+{
+  "summary": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0
+  },
+  "persisted": false,
+  "results": [
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "missing-auth",
+      "passed": true,
+      "expected_status": [
+        401,
+        403
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 25
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "missing-required-header-authorization",
+      "passed": true,
+      "expected_status": [
+        401,
+        403
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "wrong-header-value-authorization",
+      "passed": true,
+      "expected_status": [
+        401,
+        403
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "success-valid-request",
+      "passed": true,
+      "expected_status": [
+        200
+      ],
+      "status": 200,
+      "body": "{\"id\":1,\"name\":\"item-1\",\"include_history\":true,\"verbosity\":1}",
+      "latency_ms": 1
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "missing-required-path-item-id",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"path\",\"item_id\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"{item_id}\"}]}",
+      "latency_ms": 1
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "missing-required-query-include-history",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"include_history\"],\"msg\":\"Field required\",\"input\":null}]}",
+      "latency_ms": 1
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "wrong-type-path-item-id",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"path\",\"item_id\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"not_int\"}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "below-min-path-item-id",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"greater_than\",\"loc\":[\"path\",\"item_id\"],\"msg\":\"Input should be greater than 0\",\"input\":\"0\",\"ctx\":{\"gt\":0}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "wrong-type-query-include-history",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"bool_parsing\",\"loc\":[\"query\",\"include_history\"],\"msg\":\"Input should be a valid boolean, unable to interpret input\",\"input\":\"not_bool\"}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "wrong-type-query-verbosity",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"query\",\"verbosity\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"not_int\"}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "below-min-query-verbosity",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"query\",\"verbosity\"],\"msg\":\"Input should be greater than or equal to 1\",\"input\":\"0\",\"ctx\":{\"ge\":1}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/items/{item_id}",
+      "method": "GET",
+      "test_id": "above-max-query-verbosity",
+      "passed": true,
+      "expected_status": [
+        400,
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"query\",\"verbosity\"],\"msg\":\"Input should be less than or equal to 3\",\"input\":\"4\",\"ctx\":{\"le\":3}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "missing-auth",
+      "passed": true,
+      "expected_status": [
+        401
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 1
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "missing-required-header-authorization",
+      "passed": true,
+      "expected_status": [
+        401
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 2
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "wrong-header-value-authorization",
+      "passed": true,
+      "expected_status": [
+        401
+      ],
+      "status": 401,
+      "body": "{\"detail\":\"Unauthorized\"}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "missing-required-header-content-type",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":\"Content-Type header is required\"}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "wrong-header-value-content-type",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":\"Content-Type must be application/json\"}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "success-valid-request",
+      "passed": true,
+      "expected_status": [
+        200
+      ],
+      "expected_content": {
+        "input_length": 10,
+        "mode": "fast",
+        "ok": true,
+        "score": 22
+      },
+      "status": 200,
+      "body": "{\"ok\":true,\"score\":4,\"mode\":\"fast\",\"input_length\":1}",
+      "latency_ms": 1
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "missing-required-query-model-version",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"model_version\"],\"msg\":\"Field required\",\"input\":null}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "wrong-type-query-model-version",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"query\",\"model_version\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"not_int\"}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "below-min-query-model-version",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"query\",\"model_version\"],\"msg\":\"Input should be greater than or equal to 1\",\"input\":\"0\",\"ctx\":{\"ge\":1}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "above-max-query-model-version",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"query\",\"model_version\"],\"msg\":\"Input should be less than or equal to 3\",\"input\":\"4\",\"ctx\":{\"le\":3}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "wrong-type-query-mode",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_pattern_mismatch\",\"loc\":[\"query\",\"mode\"],\"msg\":\"String should match pattern '^(fast|accurate)$'\",\"input\":\"__bad_string_value__\",\"ctx\":{\"pattern\":\"^(fast|accurate)$\"}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "invalid-enum-query-mode",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_pattern_mismatch\",\"loc\":[\"query\",\"mode\"],\"msg\":\"String should match pattern '^(fast|accurate)$'\",\"input\":\"__invalid_enum_value__\",\"ctx\":{\"pattern\":\"^(fast|accurate)$\"}}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "missing-required-body-input",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\"],\"msg\":\"Field required\",\"input\":null}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "wrong-type-body-input",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"input\"],\"msg\":\"Input should be a valid string\",\"input\":5}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "above-max-body-input",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"input\"],\"msg\":\"Input should be a valid string\",\"input\":201}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "above-max-body-parameter-one",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"parameter_one\"],\"msg\":\"Input should be a valid string\",\"input\":51}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "above-max-body-parameter-two",
+      "passed": true,
+      "expected_status": [
+        422
+      ],
+      "status": 422,
+      "body": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"parameter_two\"],\"msg\":\"Input should be a valid string\",\"input\":51}]}",
+      "latency_ms": 0
+    },
+    {
+      "endpoint": "/v1/score",
+      "method": "POST",
+      "test_id": "rate-limit-exceeded-5",
+      "passed": true,
+      "expected_status": [
+        429
+      ],
+      "expected_content": {
+        "detail": "Rate limit exceeded"
+      },
+      "status": 429,
+      "body": "{\"detail\":\"Rate limit exceeded\"}",
+      "latency_ms": 1
+    }
+  ]
+}
