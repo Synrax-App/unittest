@@ -27,6 +27,13 @@ func main() {
 		Chain of operations:
 
 		1) Start the CLI
+		go run . read [id] [path] [oidc token]
+
+		where:
+		id - represents repository id
+		path - is the path to the documentation utilized by the system to create report
+
+		example command:
 		go run . read 123 ./docs.txt
 
 		2) `RunUnittest` will be ran which will:

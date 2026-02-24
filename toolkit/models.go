@@ -68,3 +68,12 @@ type UnittestCaseResult struct {
 
 	LatencyMS int64 `json:"latency_ms"`
 }
+
+// -- API Responses
+
+type OIDCResp struct {
+	Status   string `json:"status"`
+	Reason   string `json:"reason"`
+	Response bool   `json:"response"`
+	Time     string `json:"T"`
+}

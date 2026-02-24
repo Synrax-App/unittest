@@ -11,16 +11,8 @@ import (
 )
 
 // main exporting function
-func RunUnittest(repoID string, filepath string) error {
-	log.Printf("runner: start repo_id=%s file=%s", repoID, filepath)
+func RunUnittest(filepath string, config toolkit.UnittestConfig) error {
 
-	// get config from DB
-	config, err := toolkit.SynraxConfigCaller(repoID)
-	if err != nil {
-		log.Printf("runner: config fetch failed repo_id=%s error=%v", repoID, err)
-		return err
-	}
-	log.Printf("runner: config fetched repo_id=%s base=%s auth_token_present=%t", repoID, config.BaseURL, strings.TrimSpace(config.AuthToken) != "")
 	// read given file path documentation
 	docBytes, err := os.ReadFile(filepath)
 	if err != nil {
@@ -47,7 +39,7 @@ func RunUnittest(repoID string, filepath string) error {
 		log.Printf("runner: report build failed error=%v", err)
 		return err
 	}
-	log.Printf("runner: completed repo_id=%s", repoID)
+	log.Printf("runner: completed")
 	return err
 }
 

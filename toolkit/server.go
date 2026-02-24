@@ -15,6 +15,7 @@ import (
 // This module calls our APIs to load the EndpointModule, Test Spec, and Application Config
 // using internal tools by calling our server
 
+// call test spec JSON
 func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
 	BASE := os.Getenv("API_BASE_URL")
 	if strings.TrimSpace(BASE) == "" {
@@ -65,13 +66,12 @@ func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
 	return spec, nil
 }
 
+// DB interaction to check on user's config
 func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 	// we need to fetch config that our program requires to run internally
 
 	BASE := os.Getenv("API_BASE_URL")
-	if strings.TrimSpace(BASE) == "" {
-		return UnittestConfig{}, fmt.Errorf("API_BASE_URL is empty")
-	}
+
 	URL := fmt.Sprintf("%s/db/read?table=global_config", BASE)
 	log.Printf("toolkit.config: start url=%s repo_id=%s", URL, repo_id)
 
@@ -105,6 +105,42 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 
 	return config, nil
 }
+
+// Authenticate OIDC
+
+func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
+
+	BASE := os.Getenv("SYNRAX_BASE_URL")
+	URL := fmt.Sprintf("%s/github/oidc_validate?oidc_token=%s&repo_id=%s", BASE, OIDCtoken, repo_id)
+
+	resp, err := http.Get(URL)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return false, fmt.Errorf("Unexpected status code passed: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false, err
+	}
+
+	var oidc OIDCResp
+	if err := json.Unmarshal(body, &oidc); err != nil {
+		return false, err
+	}
+
+	if oidc.Status == "failure" { // case: OIDC Token is not valid or system failed
+		return false, fmt.Errorf("%s", oidc.Reason)
+	}
+
+	return true, nil // case: OIDC Token is valid
+}
+
+// ---------- helpers
 
 func decodeConfigBody(body []byte) (UnittestConfig, error) {
 	var direct UnittestConfig
