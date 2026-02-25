@@ -40,7 +40,7 @@ var readDocs = &cobra.Command{
 
 		// 2) Validate Token by Calling server
 		log.Printf("runner: config fetched repo_id=%s", repoID)
-		valid, err := toolkit.SynraxOIDCCaller(oidcToken, oidcToken)
+		valid, err := toolkit.SynraxOIDCCaller(repoID, oidcToken)
 		if err != nil {
 			log.Println(err.Error())
 			os.Exit(1)
