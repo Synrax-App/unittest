@@ -119,14 +119,11 @@ func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return false, fmt.Errorf("Unexpected status code passed: %d", resp.StatusCode)
-	}
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return false, err
 	}
+	log.Printf("%s\n", body)
 
 	var oidc OIDCResp
 	if err := json.Unmarshal(body, &oidc); err != nil {
