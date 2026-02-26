@@ -17,11 +17,11 @@ import (
 
 // call test spec JSON
 func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
-	BASE := os.Getenv("API_BASE_URL")
+	BASE := os.Getenv("SYNRAX_API_BASE_URL")
 	if strings.TrimSpace(BASE) == "" {
 		return TestSpec{}, fmt.Errorf("API_BASE_URL is empty")
 	}
-	cfg = mergeConfigWithEnvFallback(cfg)
+
 	if strings.TrimSpace(cfg.BaseURL) == "" {
 		return TestSpec{}, fmt.Errorf("config.base is empty (db and env fallback missing)")
 	}
@@ -70,7 +70,7 @@ func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
 func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 	// we need to fetch config that our program requires to run internally
 
-	BASE := os.Getenv("API_BASE_URL")
+	BASE := os.Getenv("SYNRAX_API_BASE_URL")
 
 	URL := fmt.Sprintf("%s/db/read?table=global_config", BASE)
 	log.Printf("toolkit.config: start url=%s repo_id=%s", URL, repo_id)
@@ -100,7 +100,7 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 		log.Printf("toolkit.config: decode failed error=%v body=%s", err, truncateForLog(body, 500))
 		return UnittestConfig{}, err
 	}
-	config = mergeConfigWithEnvFallback(config)
+
 	log.Printf("toolkit.config: decoded base=%s auth_token_present=%t", config.BaseURL, config.AuthToken != "")
 
 	return config, nil
@@ -110,7 +110,7 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 
 func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 
-	BASE := os.Getenv("SYNRAX_BASE_URL")
+	BASE := os.Getenv("SYNRAX_API_BASE_URL")
 	URL := fmt.Sprintf("%s/github/oidc_validate?oidc_token=%s&repo_id=%s", BASE, OIDCtoken, repo_id)
 
 	resp, err := http.Get(URL)
@@ -213,30 +213,6 @@ func findMapWithConfigKeys(v any) (map[string]any, bool) {
 		}
 	}
 	return nil, false
-}
-
-func mergeConfigWithEnvFallback(cfg UnittestConfig) UnittestConfig {
-	// Explicit SYNRAX_* values are treated as operator overrides.
-	if v := strings.TrimSpace(os.Getenv("SYNRAX_BASE_URL")); v != "" {
-		cfg.BaseURL = v
-	} else if strings.TrimSpace(cfg.BaseURL) == "" {
-		cfg.BaseURL = firstNonEmptyEnv("BASE_URL", "TARGET_BASE_URL")
-	}
-	if v := strings.TrimSpace(os.Getenv("SYNRAX_AUTH_TOKEN")); v != "" {
-		cfg.AuthToken = v
-	} else if strings.TrimSpace(cfg.AuthToken) == "" {
-		cfg.AuthToken = firstNonEmptyEnv("AUTH_TOKEN")
-	}
-	return cfg
-}
-
-func firstNonEmptyEnv(keys ...string) string {
-	for _, k := range keys {
-		if v := strings.TrimSpace(os.Getenv(k)); v != "" {
-			return v
-		}
-	}
-	return ""
 }
 
 func isAbsoluteURL(s string) bool {
