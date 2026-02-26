@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"synrax/reporter"
 	"synrax/toolkit"
 
@@ -32,9 +33,12 @@ var readDocs = &cobra.Command{
 		// ---- parameter validation ---
 
 		// 1) File Path validation
+		base, _ := os.Getwd()
+		filePath = filepath.Join(base, args[1])
+
 		_, err := os.Stat(filePath)
 		if errors.Is(err, os.ErrNotExist) {
-			log.Printf("Given path does not exist.")
+			log.Printf("Given path does not exist: %s.", filePath)
 			os.Exit(1)
 		}
 
