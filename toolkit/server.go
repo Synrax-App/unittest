@@ -80,7 +80,7 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 		Filter map[string]string `json:"filter"`
 	}{
 		Filter: map[string]string{
-			"id": repo_id,
+			"repo_id": repo_id,
 		},
 	}
 
