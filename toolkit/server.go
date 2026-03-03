@@ -3,6 +3,7 @@ package toolkit
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -97,6 +98,10 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 
 	config, err := decodeConfigBody(body)
 	if err != nil {
+		if errors.Is(err, errConfigNotFound) {
+			log.Printf("toolkit.config: config missing repo_id=%s body=%s", repo_id, truncateForLog(body, 500))
+			return UnittestConfig{}, fmt.Errorf("repo_id=%s: %w", repo_id, errConfigNotFound)
+		}
 		log.Printf("toolkit.config: decode failed error=%v body=%s", err, truncateForLog(body, 500))
 		return UnittestConfig{}, err
 	}
@@ -139,11 +144,50 @@ func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 
 // ---------- helpers
 
+var errConfigNotFound = errors.New("config not found for repo")
+
 func decodeConfigBody(body []byte) (UnittestConfig, error) {
 	var direct UnittestConfig
 	if err := json.Unmarshal(body, &direct); err == nil {
 		if strings.TrimSpace(direct.BaseURL) != "" || strings.TrimSpace(direct.AuthToken) != "" {
 			return direct, nil
+		}
+	}
+
+	var wrapper struct {
+		Status   string          `json:"status"`
+		Response json.RawMessage `json:"response"`
+	}
+	if err := json.Unmarshal(body, &wrapper); err == nil {
+		if len(wrapper.Response) > 0 {
+			trimmed := bytes.TrimSpace(wrapper.Response)
+			if bytes.Equal(trimmed, []byte("null")) {
+				return UnittestConfig{}, errConfigNotFound
+			}
+
+			var nested UnittestConfig
+			if err := json.Unmarshal(trimmed, &nested); err == nil {
+				if strings.TrimSpace(nested.BaseURL) != "" || strings.TrimSpace(nested.AuthToken) != "" {
+					return nested, nil
+				}
+			}
+
+			var nestedAny any
+			if err := json.Unmarshal(trimmed, &nestedAny); err == nil {
+				rawMap, ok := findMapWithConfigKeys(nestedAny)
+				if ok {
+					raw, err := json.Marshal(rawMap)
+					if err != nil {
+						return UnittestConfig{}, err
+					}
+
+					var cfg UnittestConfig
+					if err := json.Unmarshal(raw, &cfg); err != nil {
+						return UnittestConfig{}, err
+					}
+					return cfg, nil
+				}
+			}
 		}
 	}
 
@@ -153,7 +197,7 @@ func decodeConfigBody(body []byte) (UnittestConfig, error) {
 	}
 	rawMap, ok := findMapWithConfigKeys(anyBody)
 	if !ok {
-		return UnittestConfig{}, fmt.Errorf("could not find config object with base/auth_token fields")
+		return UnittestConfig{}, fmt.Errorf("%w: could not find config object with base/auth_token fields", errConfigNotFound)
 	}
 
 	raw, err := json.Marshal(rawMap)
