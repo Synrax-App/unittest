@@ -157,6 +157,7 @@ func decodeConfigBody(body []byte) (UnittestConfig, error) {
 	var wrapper struct {
 		Status   string          `json:"status"`
 		Response json.RawMessage `json:"response"`
+		Time     string          `json:"T"`
 	}
 	if err := json.Unmarshal(body, &wrapper); err == nil {
 		if len(wrapper.Response) > 0 {
