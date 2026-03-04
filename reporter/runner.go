@@ -56,22 +56,32 @@ func BuildReportFromDocumentation(spec toolkit.TestSpec, cfg toolkit.UnittestCon
 	log.Printf("runner.build: test run complete total=%d passed=%d failed=%d", report.Summary.Total, report.Summary.Passed, report.Summary.Failed)
 
 	// write report.json
-	path, err := filepath.Abs("./report.json")
+	jsonPath, err := filepath.Abs("./synrax/report.json")
 	if err != nil {
 		log.Printf("runner.build: failed resolve report path error=%v", err)
 		return toolkit.UnittestReport{}, err
 	}
-	if err := writeJSON(path, report); err != nil {
-		log.Printf("runner.build: failed write report path=%s error=%v", path, err)
+	reportPath, err := filepath.Abs("./synrax/report.md")
+	if err != nil {
+		log.Printf("runner.build: failed resolve report path error=%v", err)
+		return toolkit.UnittestReport{}, err
+	}
+
+	if err := toolkit.ParseUnittest(reportPath, report); err != nil {
+		log.Printf("runner.build: failed write report path=%s error=%v", reportPath, err)
+		return toolkit.UnittestReport{}, fmt.Errorf("persist report json: %w", err)
+	}
+
+	if err := writeJSON(jsonPath, report); err != nil {
+		log.Printf("runner.build: failed write report path=%s error=%v", jsonPath, err)
 		return toolkit.UnittestReport{}, fmt.Errorf("persist report json: %w", err)
 	}
 	report.Persisted = true
-	log.Printf("runner.build: report persisted path=%s", path)
 
 	return report, nil
 }
 
-func writeJSON(path string, data any) error {
+func writeJSON(path string, data toolkit.UnittestReport) error {
 	log.Printf("runner.write_json: writing file=%s", path)
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return fmt.Errorf("prepare output directory for %q: %w", path, err)
