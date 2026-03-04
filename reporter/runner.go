@@ -11,13 +11,13 @@ import (
 )
 
 // main exporting function
-func RunUnittest(filepath string, config toolkit.UnittestConfig) error {
+func RunUnittest(filepath string, config toolkit.UnittestConfig) (toolkit.UnittestReport, error) {
 
 	// read given file path documentation
 	docBytes, err := os.ReadFile(filepath)
 	if err != nil {
 		log.Printf("runner: documentation read failed file=%s error=%v", filepath, err)
-		return err
+		return toolkit.UnittestReport{}, err
 	}
 	documentation := string(docBytes)
 
@@ -27,20 +27,21 @@ func RunUnittest(filepath string, config toolkit.UnittestConfig) error {
 	spec, err := toolkit.SynraxSpecCaller(documentation, config)
 	if err != nil {
 		log.Printf("runner: spec fetch failed error=%v", err)
-		return err
+		return toolkit.UnittestReport{}, err
 	}
 	log.Printf("runner: spec fetched endpoints=%d", len(spec.Endpoints))
 	if len(spec.Endpoints) == 0 {
-		return fmt.Errorf("received empty test spec from server")
+		return toolkit.UnittestReport{}, fmt.Errorf("received empty test spec from server")
 	}
 	// build documentation
-	_, err = BuildReportFromDocumentation(spec, config)
+	report, err := BuildReportFromDocumentation(spec, config)
 	if err != nil {
 		log.Printf("runner: report build failed error=%v", err)
-		return err
+		return toolkit.UnittestReport{}, err
 	}
+
 	log.Printf("runner: completed")
-	return err
+	return report, err
 }
 
 func BuildReportFromDocumentation(spec toolkit.TestSpec, cfg toolkit.UnittestConfig) (toolkit.UnittestReport, error) {

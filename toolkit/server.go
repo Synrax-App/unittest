@@ -112,7 +112,6 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 }
 
 // Authenticate OIDC
-
 func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 
 	BASE := os.Getenv("SYNRAX_API_BASE_URL")
@@ -140,6 +139,34 @@ func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 	}
 
 	return true, nil // case: OIDC Token is valid
+}
+
+func SynraxReportStorage(repoID string, report UnittestReport) error {
+
+	metrics, err := ReportMetrics(repoID, report)
+	if err != nil {
+		return err
+	}
+
+	base := os.Getenv("SYNRAX_API_BASE_URL")
+	URL := fmt.Sprintf("%s/db/create?table=unittest_runs", base)
+
+	payload := struct {
+		Schema ReportMetric `json:"schema"`
+	}{
+		Schema: metrics,
+	}
+
+	resp, body, err := postJSON(URL, payload)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return fmt.Errorf("report storage failed with status=%d body=%s", resp.StatusCode, truncateForLog(body, 500))
+	}
+
+	return nil
 }
 
 // ---------- helpers

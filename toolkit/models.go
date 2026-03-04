@@ -69,6 +69,25 @@ type UnittestCaseResult struct {
 	LatencyMS int64 `json:"latency_ms"`
 }
 
+// Report Metric Submission
+
+type ReportMetric struct {
+	ID          string  `json:"id"`
+	RepoID      string  `json:"repo_id"`
+	TotalTests  int     `json:"total_tests"`
+	Passed      int     `json:"passed"`
+	Failed      int     `json:"failed"`
+	SuccessRate float32 `json:"success_rate"`
+
+	GetCounts    int `json:"get_counts"`
+	PostCounts   int `json:"post_counts"`
+	PutCounts    int `json:"put_counts"`
+	DeleteCounts int `json:"delete_counts"`
+
+	UniqueEndpointsCount int     `json:"unique_endpoint_counts"`
+	AverageLatency       float32 `json:"average_latency"`
+}
+
 // -- API Responses
 
 type OIDCResp struct {

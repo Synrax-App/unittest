@@ -62,12 +62,20 @@ var readDocs = &cobra.Command{
 			os.Exit(1)
 		}
 		// 4) Checks passed. Run main function to gather unittest report
-		if err := reporter.RunUnittest(filePath, config); err != nil {
+		report, err := reporter.RunUnittest(filePath, config)
+		if err != nil {
 			log.Printf("cli.read: failed repo_id=%s error=%v", repoID, err)
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 		log.Printf("cli.read: completed repo_id=%s", repoID)
+
+		if err := toolkit.SynraxReportStorage(repoID, report); err != nil {
+			log.Printf("cli.submission: failed repo_id=%s error=%v", repoID, err)
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		log.Println("All processes completed.")
 	},
 }
 
