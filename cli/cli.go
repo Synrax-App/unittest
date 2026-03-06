@@ -62,7 +62,7 @@ var readDocs = &cobra.Command{
 			os.Exit(1)
 		}
 		// 4) Checks passed. Run main function to gather unittest report
-		report, err := reporter.RunUnittest(filePath, config)
+		report, err := reporter.RunUnittest(filePath, config, repoID)
 		if err != nil {
 			log.Printf("cli.read: failed repo_id=%s error=%v", repoID, err)
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

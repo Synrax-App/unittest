@@ -17,7 +17,7 @@ import (
 // using internal tools by calling our server
 
 // call test spec JSON
-func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
+func SynraxSpecCaller(docs string, cfg UnittestConfig, repoID string) (TestSpec, error) {
 	BASE := os.Getenv("SYNRAX_API_BASE_URL")
 	if strings.TrimSpace(BASE) == "" {
 		return TestSpec{}, fmt.Errorf("API_BASE_URL is empty")
@@ -30,7 +30,7 @@ func SynraxSpecCaller(docs string, cfg UnittestConfig) (TestSpec, error) {
 		return TestSpec{}, fmt.Errorf("config.base must be an absolute URL, got=%q", cfg.BaseURL)
 	}
 
-	URL := fmt.Sprintf("%s/ai/test_spec", BASE)
+	URL := fmt.Sprintf("%s/ai/test_spec?repo_id=%s", BASE, repoID)
 	log.Printf("toolkit.spec: start url=%s docs_bytes=%d config_base=%s auth_token_present=%t", URL, len(docs), cfg.BaseURL, strings.TrimSpace(cfg.AuthToken) != "")
 
 	payload := struct {

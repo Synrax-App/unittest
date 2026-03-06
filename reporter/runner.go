@@ -11,7 +11,7 @@ import (
 )
 
 // main exporting function
-func RunUnittest(filepath string, config toolkit.UnittestConfig) (toolkit.UnittestReport, error) {
+func RunUnittest(filepath string, config toolkit.UnittestConfig, repoID string) (toolkit.UnittestReport, error) {
 
 	// read given file path documentation
 	docBytes, err := os.ReadFile(filepath)
@@ -24,7 +24,7 @@ func RunUnittest(filepath string, config toolkit.UnittestConfig) (toolkit.Unitte
 	log.Printf("runner: documentation loaded bytes=%d", len(docBytes))
 
 	// call spec API from server
-	spec, err := toolkit.SynraxSpecCaller(documentation, config)
+	spec, err := toolkit.SynraxSpecCaller(documentation, config, repoID)
 	if err != nil {
 		log.Printf("runner: spec fetch failed error=%v", err)
 		return toolkit.UnittestReport{}, err
