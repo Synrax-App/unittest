@@ -8,7 +8,10 @@ func ReportMetrics(repoID string, report UnittestReport) (ReportMetric, error) {
 	passed := report.Summary.Passed
 	failed := report.Summary.Failed
 
-	passRate := ((passed - failed) / passed) * 100
+	var passRate float32 = 0.0
+	if totalTests > 0 {
+		passRate = (float32(passed) / float32(totalTests)) * 100.0
+	}
 
 	uniqueEndpoints := make(map[string]int)
 	methodCounts := map[string]int{
@@ -47,19 +50,24 @@ func ReportMetrics(repoID string, report UnittestReport) (ReportMetric, error) {
 		sum = sum + lat
 	}
 
+	var avgLatency float32 = 0.0
+	if len(latencyArray) > 0 {
+		avgLatency = float32(sum) / float32(len(latencyArray))
+	}
+
 	metrics := ReportMetric{
 		ID:                   uuid.NewString(),
 		RepoID:               repoID,
 		TotalTests:           totalTests,
 		Passed:               passed,
 		Failed:               failed,
-		SuccessRate:          float32(passRate),
+		SuccessRate:          passRate,
 		GetCounts:            methodCounts["GET"],
 		PostCounts:           methodCounts["POST"],
 		PutCounts:            methodCounts["PUT"],
 		DeleteCounts:         methodCounts["DELETE"],
 		UniqueEndpointsCount: len(keys),
-		AverageLatency:       float32(sum / len(latencyArray)),
+		AverageLatency:       avgLatency,
 	}
 
 	return metrics, nil
