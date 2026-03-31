@@ -113,11 +113,18 @@ func SynraxConfigCaller(repo_id string) (UnittestConfig, error) {
 
 // Authenticate OIDC
 func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
-
+	key := os.Getenv("INTERNAL_API_KEY")
 	BASE := os.Getenv("SYNRAX_API_BASE_URL")
 	URL := fmt.Sprintf("%s/github/oidc_validate?oidc_token=%s&repo_id=%s", BASE, OIDCtoken, repo_id)
 
-	resp, err := http.Get(URL)
+	request, err := http.NewRequest(http.MethodGet, URL, nil)
+	if err != nil {
+		return false, err
+	}
+	request.Header.Set("Authorization", "Bearer "+key)
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
 	if err != nil {
 		return false, err
 	}
@@ -304,8 +311,17 @@ func postJSON(url string, payload any) (*http.Response, []byte, error) {
 	if err != nil {
 		return nil, nil, fmt.Errorf("marshal payload: %w", err)
 	}
+	key := os.Getenv("INTERNAL_API_KEY")
+	requestPayload := bytes.NewReader(raw)
+	request, err := http.NewRequest(http.MethodPost, url, requestPayload)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewReader(raw))
+	request.Header.Set("Authorization", "Bearer "+key)
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
 	if err != nil {
 		return nil, nil, err
 	}
