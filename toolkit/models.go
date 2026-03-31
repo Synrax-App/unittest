@@ -85,6 +85,7 @@ type ReportMetric struct {
 	DeleteCounts int `json:"delete_counts"`
 
 	UniqueEndpointsCount int     `json:"unique_endpoint_counts"`
+	CreatedAt            string	 `json:"created_at"`
 	AverageLatency       float32 `json:"average_latency"`
 	TargetBranch		 string  `json:"target_branch"`
 }

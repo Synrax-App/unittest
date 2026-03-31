@@ -1,6 +1,10 @@
 package toolkit
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 func ReportMetrics(repoID string, targetBranch string, report UnittestReport) (ReportMetric, error) {
 	totalTests := report.Summary.Total
@@ -67,6 +71,7 @@ func ReportMetrics(repoID string, targetBranch string, report UnittestReport) (R
 		PostCounts:           methodCounts["POST"],
 		PutCounts:            methodCounts["PUT"],
 		DeleteCounts:         methodCounts["DELETE"],
+		CreatedAt: 			  time.Now().String(),
 		UniqueEndpointsCount: len(keys),
 		AverageLatency:       avgLatency,
 	}
