@@ -141,9 +141,9 @@ func SynraxOIDCCaller(repo_id string, OIDCtoken string) (bool, error) {
 	return true, nil // case: OIDC Token is valid
 }
 
-func SynraxReportStorage(repoID string, report UnittestReport) error {
+func SynraxReportStorage(repoID string, targetBranch string, report UnittestReport) error {
 
-	metrics, err := ReportMetrics(repoID, report)
+	metrics, err := ReportMetrics(repoID, targetBranch, report)
 	if err != nil {
 		return err
 	}

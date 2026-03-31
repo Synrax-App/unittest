@@ -86,6 +86,7 @@ type ReportMetric struct {
 
 	UniqueEndpointsCount int     `json:"unique_endpoint_counts"`
 	AverageLatency       float32 `json:"average_latency"`
+	TargetBranch		 string  `json:"target_branch"`
 }
 
 // -- API Responses

@@ -2,7 +2,7 @@ package toolkit
 
 import "github.com/google/uuid"
 
-func ReportMetrics(repoID string, report UnittestReport) (ReportMetric, error) {
+func ReportMetrics(repoID string, targetBranch string, report UnittestReport) (ReportMetric, error) {
 	totalTests := report.Summary.Total
 
 	passed := report.Summary.Passed
@@ -58,6 +58,7 @@ func ReportMetrics(repoID string, report UnittestReport) (ReportMetric, error) {
 	metrics := ReportMetric{
 		ID:                   uuid.NewString(),
 		RepoID:               repoID,
+		TargetBranch:		  targetBranch,
 		TotalTests:           totalTests,
 		Passed:               passed,
 		Failed:               failed,

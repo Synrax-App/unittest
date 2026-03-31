@@ -20,14 +20,15 @@ var rootCommand = &cobra.Command{
 }
 
 var readDocs = &cobra.Command{
-	Use:   "read [repo_id] [file_path]",
+	Use:   "read [repo_id] [file_path] [oidc_token] [branch_name]",
 	Short: "Executes the unittest given `repo_id` and `file_path`",
 	Long:  "Reads a file from the provided path and performs operations on it. Repo id is required to query user's configuration for the app. File path expects API documentation to create a unittest report.",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoID := args[0]
 		filePath := args[1]
 		oidcToken := args[2]
+		targetBranch := args[3]
 		log.Printf("cli.read: starting repo_id=%s file_path=%s", repoID, filePath)
 
 		// ---- parameter validation ---
@@ -70,7 +71,7 @@ var readDocs = &cobra.Command{
 		}
 		log.Printf("cli.read: completed repo_id=%s", repoID)
 
-		if err := toolkit.SynraxReportStorage(repoID, report); err != nil {
+		if err := toolkit.SynraxReportStorage(repoID, targetBranch, report); err != nil {
 			log.Printf("cli.submission: failed repo_id=%s error=%v", repoID, err)
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
