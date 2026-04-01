@@ -71,7 +71,7 @@ func ReportMetrics(repoID string, targetBranch string, report UnittestReport) (R
 		PostCounts:           methodCounts["POST"],
 		PutCounts:            methodCounts["PUT"],
 		DeleteCounts:         methodCounts["DELETE"],
-		CreatedAt: 			  time.Now().UTC()
+		CreatedAt: 			  time.Now().UTC(),
 		UniqueEndpointsCount: len(keys),
 		AverageLatency:       avgLatency,
 	}
