@@ -1,5 +1,7 @@
 package toolkit
 
+import "time"
+
 type UnittestConfig struct {
 	AuthToken string `json:"auth_token"`
 	BaseURL   string `json:"base"` // "http://localhost:8000" example
@@ -84,10 +86,10 @@ type ReportMetric struct {
 	PutCounts    int `json:"put_counts"`
 	DeleteCounts int `json:"delete_counts"`
 
-	UniqueEndpointsCount int     `json:"unique_endpoint_counts"`
-	CreatedAt            string	 `json:"created_at"`
-	AverageLatency       float32 `json:"average_latency"`
-	TargetBranch		 string  `json:"target_branch"`
+	UniqueEndpointsCount int     	 `json:"unique_endpoint_counts"`
+	CreatedAt            time.Time	 `json:"created_at"`
+	AverageLatency       float32 	 `json:"average_latency"`
+	TargetBranch		 string  	 `json:"target_branch"`
 }
 
 // -- API Responses
