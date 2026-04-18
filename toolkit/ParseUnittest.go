@@ -111,22 +111,22 @@ func writeEndpointFailure(path string, file *os.File, report UnittestReport) err
 func formatEndpointBody(raw string) string {
 	trimmed := strings.TrimSpace(raw)
 	if trimmed == "" {
-		return "```json\n{}\n```"
+		return "```json\n{}\n```\n"
 	}
 
 	var parsed any
 	if err := json.Unmarshal([]byte(trimmed), &parsed); err != nil {
-		return "```\n" + trimmed + "\n```"
+		return "```\n" + trimmed + "\n```\n"
 	}
 
 	formatted, err := json.MarshalIndent(parsed, "", "  ")
 	if err != nil {
-		return "```json\n" + trimmed + "\n```"
+		return "```json\n" + trimmed + "\n```\n"
 	}
 
 	var buf bytes.Buffer
 	buf.WriteString("```json\n")
 	buf.Write(formatted)
-	buf.WriteString("\n```")
+	buf.WriteString("\n```\n")
 	return buf.String()
 }

@@ -1,4 +1,4 @@
-## Endpoint: {{ .Name }}
+# Endpoint: {{ .Name }}
 
 ### Success: {{ .Passed }}
 
